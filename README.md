@@ -179,9 +179,21 @@ We provide a script for easy benchmarking. See [examples/benchmark](https://gith
 PyTorch 2.0 introduced optimized [scaled dot product attention](https://pytorch.org/docs/stable/generated/torch.nn.functional.scaled_dot_product_attention.html), which can speed up transformers quite a bit. We didn't use this in our original benchmarking, but since it's a free speed-up this repo will automatically use it if available. To get its benefits, make sure your torch version is 2.0 or above.
 
 ### Training
+Note: I implement MAE pre-training and finetuning based on MAE implementations (https://github.com/facebookresearch/mae)
 
-Coming soon.
+Pre-training:
+```
+torchrun main_pretrain.py --warmup_epochs 40 --epochs 800 \
+                          --blr 1.5e-4 --weight_decay 0.05
+```
 
+Finetuning:
+```
+torchrun main_finetune.py --finetune checkpoint/mae_hiera_base_224.pth \
+                          --epochs 150 --blr 5e-4 --layer_decay 0.65 \
+                          --weight_decay 0.05 --drop_path 0.1 \
+                          --dist_eval --output_dir out_dir_finetune --log_dir out_dir_finetune
+```
 
 ## Citation
 If you use Hiera or this code in your work, please cite:
